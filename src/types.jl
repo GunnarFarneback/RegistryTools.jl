@@ -22,12 +22,7 @@ function path(cache::RegistryCache, registry_url::AbstractString)
 end
 
 function get_registry_default_branch(git::Cmd)
-    env = copy(ENV)
-    env["LANG"] = "en_US.UTF-8"
-    lines = collect(eachline(setenv(`$git remote show origin`, env)))
-    idx = findfirst(x -> occursin("HEAD branch", x), lines)
-    idx === nothing && error("Failed to get default branch of registry")
-    strip(split(lines[idx], ":")[2])
+    readchomp(`$git rev-parse --abbrev-ref HEAD`)
 end
 
 struct Project
